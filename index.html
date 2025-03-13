@@ -3,13 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stars and Planets Visualization</title>
+  <title>3D Stars and Planets Visualization</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <div id="visualization"></div>
-    <div id="info-panel"></div>
+    <div id="scene">
+      <div id="solar-system"></div>
+      <div id="stars-container"></div>
+    </div>
+    <div id="info-panel">
+      <button id="close-btn">&times;</button>
+      <div id="info-content"></div>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>

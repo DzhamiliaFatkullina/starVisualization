@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  #visualization {
+    flex: 3;
+    position: relative;
+    background-color: #000;
+  }
+  
+  #info-panel {
+    flex: 1;
+    padding: 20px;
+    background-color: #222;
+    overflow-y: auto;
+  }
+  
+  .star {
+    position: absolute;
+    background-color: grey;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .star:hover {
+    opacity: 0.8;
+  }
+  
+  .solar-system {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

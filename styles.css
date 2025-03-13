@@ -42,3 +42,14 @@ body {
     font-size: 24px;
     cursor: pointer;
   }
+  
+  /* CSS2D Label Styling */
+  .label {
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    border-radius: 5px;
+    pointer-events: none; /* Ensure labels don't interfere with clicks */
+  }

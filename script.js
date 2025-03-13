@@ -5,6 +5,14 @@ const renderer = new THREE.WebGLRenderer({ antialias: true }); // Enable antiali
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene').appendChild(renderer.domElement);
 
+// CSS2D Renderer for Labels
+const labelRenderer = new THREE.CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0';
+labelRenderer.domElement.style.pointerEvents = 'none'; // Ensure labels don't block clicks
+document.getElementById('labels').appendChild(labelRenderer.domElement);
+
 // Stars Container
 const starsContainer = new THREE.Group();
 scene.add(starsContainer);
@@ -25,6 +33,9 @@ let rotationY = 0;
 let targetFOV = 75; // Target field of view for smooth zooming
 const zoomSpeed = 1; // Speed of zooming
 const zoomDamping = 0.1; // Smoothing factor for zooming
+
+// Selected Object
+let selectedObject = null;
 
 // Add a Light Source
 const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -60,7 +71,21 @@ function createStar(star, minRadius, maxRadius, minDistance, maxDistance) {
 
   sphere.userData = star; // Store star data for click events
 
+  // Add a label for the star (hidden by default)
+  const label = new THREE.CSS2DObject(createLabelElement(star.pl_name));
+  label.position.set(0, size + 0.5, 0); // Position the label above the sphere
+  label.visible = false; // Hide the label initially
+  sphere.add(label);
+
   starsContainer.add(sphere);
+}
+
+// Function to Create a Label Element
+function createLabelElement(text) {
+  const div = document.createElement('div');
+  div.className = 'label';
+  div.textContent = text;
+  return div;
 }
 
 // Create the Solar System at the Center
@@ -69,6 +94,12 @@ const solarSystemMaterial = new THREE.MeshBasicMaterial({ color: 0xff8c42 }); //
 const solarSystem = new THREE.Mesh(solarSystemGeometry, solarSystemMaterial);
 solarSystem.position.set(0, 0, 0); // Center of the scene
 scene.add(solarSystem);
+
+// Add a label for the solar system (hidden by default)
+const solarSystemLabel = new THREE.CSS2DObject(createLabelElement("Solar System"));
+solarSystemLabel.position.set(0, 6, 0); // Position the label above the solar system
+solarSystemLabel.visible = false; // Hide the label initially
+solarSystem.add(solarSystemLabel);
 
 // Add Click Event to the Solar System
 solarSystem.userData = {
@@ -137,6 +168,27 @@ renderer.domElement.addEventListener('click', (event) => {
 
   if (intersects.length > 0) {
     const object = intersects[0].object;
+
+    // Deselect the previously selected object
+    if (selectedObject) {
+      selectedObject.material.color.set(selectedObject.userData.originalColor || 0xffffff);
+      selectedObject.children[0].visible = false; // Hide the previous label
+    }
+
+    // Select the new object
+    selectedObject = object;
+    selectedObject.userData.originalColor = selectedObject.material.color.getHex();
+
+    // Change color based on the object type
+    if (object === solarSystem) {
+      selectedObject.material.color.set(0xffd700); // Yellow pastel for solar system
+    } else {
+      selectedObject.material.color.set(0x1e90ff); // Dark blue for stars
+    }
+
+    // Show the label for the selected object
+    selectedObject.children[0].visible = true;
+
     if (object === solarSystem) {
       solarSystem.onClick();
     } else {
@@ -217,6 +269,7 @@ function animate() {
   camera.updateProjectionMatrix();
 
   renderer.render(scene, camera);
+  labelRenderer.render(scene, camera); // Render CSS2D labels
 }
 
 // Move the camera farther away
@@ -228,4 +281,5 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });

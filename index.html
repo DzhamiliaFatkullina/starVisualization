@@ -7,16 +7,15 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <div id="scene">
-      <div id="solar-system"></div>
-      <div id="stars-container"></div>
-    </div>
-    <div id="info-panel">
-      <button id="close-btn">&times;</button>
-      <div id="info-content"></div>
-    </div>
+  <div id="scene"></div> <!-- Three.js canvas will be injected here -->
+  <div id="info-panel">
+    <button id="close-btn">&times;</button>
+    <div id="info-content"></div>
   </div>
+
+  <!-- Include Three.js from a CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Include your main JavaScript file -->
   <script src="script.js"></script>
 </body>
 </html>

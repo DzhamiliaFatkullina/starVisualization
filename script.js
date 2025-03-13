@@ -1,99 +1,110 @@
-const scene = document.getElementById('scene');
-const starsContainer = document.getElementById('stars-container');
-const solarSystem = document.getElementById('solar-system');
+// Scene, Camera, and Renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true }); // Enable antialiasing
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('scene').appendChild(renderer.domElement);
+
+// Stars Container
+const starsContainer = new THREE.Group();
+scene.add(starsContainer);
+
+// Info Panel
 const infoPanel = document.getElementById('info-panel');
 const infoContent = document.getElementById('info-content');
 const closeBtn = document.getElementById('close-btn');
 
+// Variables for Mouse Interaction
 let isDragging = false;
 let previousMouseX = 0;
 let previousMouseY = 0;
 let rotationX = 0;
 let rotationY = 0;
 
-// Function to generate a random shade of gray
+// Add a Light Source
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(1, 1, 1).normalize();
+scene.add(light);
+
+// Function to Generate a Random Shade of Gray
 function getRandomGray() {
   const brightness = Math.floor(Math.random() * 155) + 100; // Range: 100-255
   return `rgb(${brightness}, ${brightness}, ${brightness})`;
 }
 
-// Function to normalize values for size and distance
+// Function to Normalize Values for Size and Distance
 function normalize(value, min, max, newMin, newMax) {
   return ((value - min) / (max - min)) * (newMax - newMin) + newMin;
 }
 
-// Function to create a star/planet dot
+// Function to Create a Star/Planet
 function createStar(star, minRadius, maxRadius, minDistance, maxDistance) {
-  const starElement = document.createElement('div');
-  starElement.className = 'star';
+  const size = normalize(star.pl_radius, minRadius, maxRadius, 0.2, 2); // Larger size range
+  const distance = normalize(star.to_star_distance, minDistance, maxDistance, 50, 200); // Larger distance range
 
-  // Set size based on planet radius (scaled down for visualization)
-  const size = normalize(star.pl_radius, minRadius, maxRadius, 5, 50); // Size between 5px and 50px
-  starElement.style.width = `${size}px`;
-  starElement.style.height = `${size}px`;
+  const geometry = new THREE.SphereGeometry(size, 64, 64); // Higher resolution
+  const material = new THREE.MeshBasicMaterial({ color: getRandomGray() });
+  const sphere = new THREE.Mesh(geometry, material);
 
-  // Set random shade of gray
-  starElement.style.backgroundColor = getRandomGray();
-
-  // Position the star on a 3D sphere
-  const distance = normalize(star.to_star_distance, minDistance, maxDistance, 100, 300); // Distance between 100px and 300px
   const theta = Math.random() * Math.PI * 2; // Random angle for horizontal placement
   const phi = Math.random() * Math.PI; // Random angle for vertical placement
 
-  const x = distance * Math.sin(phi) * Math.cos(theta);
-  const y = distance * Math.sin(phi) * Math.sin(theta);
-  const z = distance * Math.cos(phi);
+  sphere.position.x = distance * Math.sin(phi) * Math.cos(theta);
+  sphere.position.y = distance * Math.sin(phi) * Math.sin(theta);
+  sphere.position.z = distance * Math.cos(phi);
 
-  starElement.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+  sphere.userData = star; // Store star data for click events
 
-  // Add click event to show info
-  starElement.addEventListener('click', () => {
-    infoContent.innerHTML = `
-      <h2>${star.pl_name}</h2>
-      <p><strong>Host Star:</strong> ${star.host_star}</p>
-      <p><strong>Star Spectral Type:</strong> ${star.st_spectype || 'N/A'}</p>
-      <p><strong>Orbital Period:</strong> ${star.pl_orbital_period} days</p>
-      <p><strong>Planet Radius:</strong> ${star.pl_radius} Earth radii</p>
-      <p><strong>Planet Mass:</strong> ${star.pl_mass} Earth masses</p>
-      <p><strong>Distance to Star:</strong> ${star.to_star_distance} light-years</p>
-      <p><strong>Equilibrium Temperature:</strong> ${star.equilibrium_temperature_pl} K</p>
-      <p><strong>Star Effective Temperature:</strong> ${star.star_effective_temperature} K</p>
-      <p><strong>Star Mass:</strong> ${star.st_mass} Solar masses</p>
-    `;
-    infoPanel.style.transform = 'translateX(0)';
-  });
-
-  starsContainer.appendChild(starElement);
+  starsContainer.add(sphere);
 }
 
-// Add click event to the solar system
-solarSystem.addEventListener('click', () => {
+// Create the Solar System at the Center
+const solarSystemGeometry = new THREE.SphereGeometry(5, 64, 64); // Larger and higher resolution
+const solarSystemMaterial = new THREE.MeshBasicMaterial({ color: 0xff8c42 }); // Yellowish-orange
+const solarSystem = new THREE.Mesh(solarSystemGeometry, solarSystemMaterial);
+solarSystem.position.set(0, 0, 0); // Center of the scene
+scene.add(solarSystem);
+
+// Add Click Event to the Solar System
+solarSystem.userData = {
+  pl_name: "Solar System",
+  host_star: "Sun",
+  st_spectype: "G2 V",
+  pl_orbital_period: 365.25,
+  pl_radius: 109, // Relative to Earth
+  pl_mass: 333000, // Relative to Earth
+  to_star_distance: 0,
+  equilibrium_temperature_pl: 5778,
+  star_effective_temperature: 5778,
+  st_mass: 1
+};
+
+solarSystem.onClick = () => {
   infoContent.innerHTML = `
     <h2>Solar System</h2>
-    <p><strong>Star:</strong> Sun</p>
-    <p><strong>Star Type:</strong> G2 V</p>
-    <p><strong>Number of Planets:</strong> 8</p>
-    <p><strong>Distance to Center of Galaxy:</strong> 26,000 light-years</p>
+    <p><strong>Host Star:</strong> Sun</p>
+    <p><strong>Star Spectral Type:</strong> G2 V</p>
+    <p><strong>Orbital Period:</strong> 365.25 days</p>
+    <p><strong>Planet Radius:</strong> 109 Earth radii</p>
+    <p><strong>Planet Mass:</strong> 333,000 Earth masses</p>
+    <p><strong>Distance to Star:</strong> 0 light-years</p>
+    <p><strong>Equilibrium Temperature:</strong> 5778 K</p>
+    <p><strong>Star Effective Temperature:</strong> 5778 K</p>
+    <p><strong>Star Mass:</strong> 1 Solar mass</p>
   `;
-  infoPanel.style.transform = 'translateX(0)';
-});
+  infoPanel.classList.add('open');
+};
 
-// Close button for the info panel
-closeBtn.addEventListener('click', () => {
-  infoPanel.style.transform = 'translateX(100%)';
-});
-
-// Fetch data from info.json
+// Fetch Data from info.json
 fetch('info.json')
-  .then(response => response.text()) // Read the file as text
+  .then(response => response.text())
   .then(data => {
-    // Split the file into lines
-    const lines = data.split('\n').filter(line => line.trim() !== '');
+    const starsData = data
+      .split('\n')
+      .filter(line => line.trim() !== '')
+      .map(line => JSON.parse(line));
 
-    // Parse each line as a JSON object
-    const starsData = lines.map(line => JSON.parse(line));
-
-    // Calculate min and max values for radius and distance
+    // Calculate Min and Max Values for Radius and Distance
     const radii = starsData.map(star => star.pl_radius);
     const distances = starsData.map(star => star.to_star_distance);
     const minRadius = Math.min(...radii);
@@ -101,39 +112,95 @@ fetch('info.json')
     const minDistance = Math.min(...distances);
     const maxDistance = Math.max(...distances);
 
-    // Create stars/planets from the data
+    // Create Stars/Planets from the Data
     starsData.forEach(star => createStar(star, minRadius, maxRadius, minDistance, maxDistance));
   })
   .catch(error => {
     console.error('Error loading or parsing the JSON file:', error);
   });
 
-// Make the 3D scene rotatable
-scene.addEventListener('mousedown', (e) => {
+// Handle Click Events on Stars and Solar System
+renderer.domElement.addEventListener('click', (event) => {
+  const mouse = new THREE.Vector2();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects([...starsContainer.children, solarSystem]);
+
+  if (intersects.length > 0) {
+    const object = intersects[0].object;
+    if (object === solarSystem) {
+      solarSystem.onClick();
+    } else {
+      const star = object.userData;
+      infoContent.innerHTML = `
+        <h2>${star.pl_name}</h2>
+        <p><strong>Host Star:</strong> ${star.host_star}</p>
+        <p><strong>Star Spectral Type:</strong> ${star.st_spectype || 'N/A'}</p>
+        <p><strong>Orbital Period:</strong> ${star.pl_orbital_period} days</p>
+        <p><strong>Planet Radius:</strong> ${star.pl_radius} Earth radii</p>
+        <p><strong>Planet Mass:</strong> ${star.pl_mass} Earth masses</p>
+        <p><strong>Distance to Star:</strong> ${star.to_star_distance} light-years</p>
+        <p><strong>Equilibrium Temperature:</strong> ${star.equilibrium_temperature_pl} K</p>
+        <p><strong>Star Effective Temperature:</strong> ${star.star_effective_temperature} K</p>
+        <p><strong>Star Mass:</strong> ${star.st_mass} Solar masses</p>
+      `;
+      infoPanel.classList.add('open');
+    }
+  }
+});
+
+// Close Button for the Info Panel
+closeBtn.addEventListener('click', () => {
+  infoPanel.classList.remove('open');
+});
+
+// Handle Mouse Drag to Rotate the Scene
+renderer.domElement.addEventListener('mousedown', (e) => {
   isDragging = true;
   previousMouseX = e.clientX;
   previousMouseY = e.clientY;
 });
 
-scene.addEventListener('mousemove', (e) => {
+renderer.domElement.addEventListener('mousemove', (e) => {
   if (isDragging) {
     const deltaX = e.clientX - previousMouseX;
     const deltaY = e.clientY - previousMouseY;
 
-    rotationY += deltaX * 0.5;
-    rotationX += deltaY * 0.5;
+    rotationY += deltaX * 0.005;
+    rotationX += deltaY * 0.005;
 
-    starsContainer.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    starsContainer.rotation.x = rotationX;
+    starsContainer.rotation.y = rotationY;
 
     previousMouseX = e.clientX;
     previousMouseY = e.clientY;
   }
 });
 
-scene.addEventListener('mouseup', () => {
+renderer.domElement.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
-scene.addEventListener('mouseleave', () => {
+renderer.domElement.addEventListener('mouseleave', () => {
   isDragging = false;
+});
+
+// Animation Loop
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+camera.position.z = 150; // Move the camera back
+animate();
+
+// Handle Window Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });

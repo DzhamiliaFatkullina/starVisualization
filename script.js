@@ -21,6 +21,11 @@ let previousMouseY = 0;
 let rotationX = 0;
 let rotationY = 0;
 
+// Zoom Variables
+let targetFOV = 75; // Target field of view for smooth zooming
+const zoomSpeed = 1; // Speed of zooming
+const zoomDamping = 0.1; // Smoothing factor for zooming
+
 // Add a Light Source
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(1, 1, 1).normalize();
@@ -189,13 +194,33 @@ renderer.domElement.addEventListener('mouseleave', () => {
   isDragging = false;
 });
 
+// Handle Zoom In/Out with Mouse Wheel
+renderer.domElement.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  if (event.deltaY < 0) {
+    // Zoom in
+    targetFOV -= zoomSpeed;
+  } else {
+    // Zoom out
+    targetFOV += zoomSpeed;
+  }
+  // Clamp the FOV to reasonable values
+  targetFOV = Math.max(10, Math.min(100, targetFOV));
+});
+
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
+
+  // Smoothly interpolate the FOV
+  camera.fov += (targetFOV - camera.fov) * zoomDamping;
+  camera.updateProjectionMatrix();
+
   renderer.render(scene, camera);
 }
 
-camera.position.z = 150; // Move the camera back
+// Move the camera farther away
+camera.position.z = 150; // Increased from 100 to 200
 animate();
 
 // Handle Window Resize

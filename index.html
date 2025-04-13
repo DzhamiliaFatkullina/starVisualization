@@ -7,18 +7,26 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="scene"></div> <!-- Three.js canvas will be injected here -->
+  <div id="scene"></div> 
   <div id="info-panel">
-    <button id="close-btn">&times;</button>
+    <button id="close-btn">×</button>
     <div id="info-content"></div>
+    <div class="visualizations">
+      <div id="sun-comparison"></div>
+      <div id="size-comparison"></div>
+    </div>
   </div>
-  <div id="labels"></div> <!-- Container for CSS2D labels -->
+  <div id="labels"></div>
+  <!-- <div id="heatmap-legend"></div>
+  <button id="heatmap-btn">Toggle Heatmap</button> -->
 
   <!-- Include Three.js from a CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <!-- Include CSS2DRenderer from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/three/examples/js/renderers/CSS2DRenderer.js"></script>
-  <!-- Include your main JavaScript file -->
+  <!-- Include D3.js -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
   <script src="script.js"></script>
 </body>
 </html>

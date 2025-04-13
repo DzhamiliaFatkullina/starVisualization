@@ -317,8 +317,8 @@ solarSystem.onClick = () => {
     <p><strong>Host Star:</strong> Sun</p>
     <p><strong>Star Spectral Type:</strong> G2 V</p>
     <p><strong>Orbital Period:</strong> 365.25 days</p>
-    <p><strong>Star Radius:</strong> 109 Earth radii</p>
-    <p><strong>Star Mass:</strong> 333,000 Earth masses</p>
+    <p><strong>Planet Radius:</strong> 109 Earth radii</p>
+    <p><strong>Planet Mass:</strong> 333,000 Earth masses</p>
     <p><strong>Distance to Star:</strong> 0 light-years</p>
     <p><strong>Equilibrium Temperature:</strong> 5778 K</p>
     <p><strong>Star Effective Temperature:</strong> 5778 K</p>
@@ -428,8 +428,8 @@ renderer.domElement.addEventListener('click', (event) => {
         <p><strong>Host Star:</strong> ${star.host_star}</p>
         <p><strong>Star Spectral Type:</strong> ${star.st_spectype || 'N/A'}</p>
         <p><strong>Orbital Period:</strong> ${star.pl_orbital_period} days</p>
-        <p><strong>Star Radius:</strong> ${star.pl_radius} Earth radii</p>
-        <p><strong>Star Mass:</strong> ${star.pl_mass} Earth masses</p>
+        <p><strong>Planet Radius:</strong> ${star.pl_radius} Earth radii</p>
+        <p><strong>Planet Mass:</strong> ${star.pl_mass} Earth masses</p>
         <p><strong>Distance to Star:</strong> ${star.to_star_distance} light-years</p>
         <p><strong>Equilibrium Temperature:</strong> ${star.equilibrium_temperature_pl} K</p>
         <p><strong>Star Effective Temperature:</strong> ${star.star_effective_temperature} K</p>

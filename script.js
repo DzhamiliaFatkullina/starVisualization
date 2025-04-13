@@ -60,10 +60,10 @@ function createSunComparisonChart(container, temperature, starName) {
   const currentTemp = temperature || sunTemp * 0.8;
   
   const data = [
-    { name: "Sun", value: sunTemp, label: `Sun (${sunTemp}K)` },
-    { name: starName, value: currentTemp, label: `${starName} (${Math.round(currentTemp)}K)` },
-    { name: coldestStar.host_star, value: minTemp, label: `${coldestStar.host_star} (${minTemp}K)` },
-    { name: hottestStar.host_star, value: maxTemp, label: `${hottestStar.host_star} (${maxTemp}K)` }
+    { name: "Sun", value: sunTemp, label: `${sunTemp} K` },
+    { name: starName || "Current Star", value: currentTemp, label: `${Math.round(currentTemp)} K` },
+    { name: coldestStar.host_star, value: minTemp, label: `${minTemp} K` },
+    { name: hottestStar.host_star, value: maxTemp, label: `${maxTemp} K` }
   ];
 
   const width = 300;
@@ -74,8 +74,7 @@ function createSunComparisonChart(container, temperature, starName) {
     .html('')
     .append("svg")
     .attr("width", width)
-    .attr("height", height)
-    .style("background", "transparent");
+    .attr("height", height);
 
   // Add title
   svg.append("text")
@@ -88,7 +87,7 @@ function createSunComparisonChart(container, temperature, starName) {
 
   // Color scale from blue (cold) to red (hot)
   const colorScale = d3.scaleSequential(d3.interpolatePlasma)
-    .domain([minTemp * 0.9, maxTemp * 1.1]);
+    .domain([0, 9000]);
 
   // Create bars
   const x = d3.scaleBand()
@@ -110,6 +109,14 @@ function createSunComparisonChart(container, temperature, starName) {
     .attr("fill", d => colorScale(d.value))
     .attr("stroke", "#fff")
     .attr("stroke-width", 1);
+
+    svg.append("style").text(`
+      .visualization-title {
+        fill: white;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    `);
 
   // Add value labels on top of bars
   svg.selectAll(".bar-label")
@@ -154,8 +161,8 @@ function createSizeComparisonChart(container, radius, planetName) {
   ];
 
   const width = 300;
-  const height = 180;
-  const margin = { top: 30, right: 20, bottom: 40, left: 50 };
+  const height = 200;
+  const margin = { top: 30, right: 20, bottom: 40, left: 30 }; // Reduced left margin
 
   const svg = d3.select(container)
     .html('') // Clear previous content
@@ -181,10 +188,17 @@ function createSizeComparisonChart(container, radius, planetName) {
     .range([margin.left, width - margin.right])
     .padding(0.3);
 
+  // Adjust x positions for Earth and Planet to be more left
+  const xPositions = {
+    "Earth": x("Earth") + x.bandwidth() / 2 - 15, // Shift left by 15 units
+    [planetName || "Planet"]: x(planetName || "Planet") + x.bandwidth() / 2 - 20, // Shift left by 10 units
+    "Sun": x("Sun") + x.bandwidth() / 2
+  };
+
   svg.selectAll("circle")
     .data(data)
     .join("circle")
-    .attr("cx", d => x(d.name) + x.bandwidth() / 2)
+    .attr("cx", d => xPositions[d.name])
     .attr("cy", height / 2)
     .attr("r", d => radiusScale(d.value))
     .attr("fill", d => d.color)
@@ -204,24 +218,30 @@ function createSizeComparisonChart(container, radius, planetName) {
     .attr("stroke", "#0d47a1")
     .attr("stroke-width", 0.5);
 
-  // Add labels
+  // Add labels - adjusted to match circle positions
   svg.selectAll(".size-label")
     .data(data)
     .join("text")
     .attr("class", "size-label")
-    .attr("x", d => x(d.name) + x.bandwidth() / 2)
-    .attr("y", height - 20)
+    .attr("x", d => xPositions[d.name])
+    .attr("y", height)
     .attr("text-anchor", "middle")
-    .text(d => `${d.name}\n(${d.value}× Earth)`)
+    .text(d => `(${d.value} Earths)`)
     .attr("fill", "white")
     .attr("font-size", "10px");
 
-  // Add axes
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("fill", "white");
+  // Add axes - adjust text positions for Earth and Planet
+  const axisGroup = svg.append("g")
+    .attr("transform", `translate(0,${height - 30})`)
+    .call(d3.axisBottom(x));
+    
+  axisGroup.selectAll("text")
+    .attr("fill", "white")
+    .attr("transform", (d) => {
+      if (d === "Earth") return "translate(-15,0)";
+      if (d === planetName || d === "Planet") return "translate(-10,0)";
+      return null;
+    });
 }
 
 function getRandomGray() {
@@ -364,7 +384,7 @@ fetch('info.json')
     // Initialize with empty array if there's an error
     allStarsData = [];
   });
-  
+
 // Handle Click Events on Stars and Solar System
 renderer.domElement.addEventListener('click', (event) => {
   const mouse = new THREE.Vector2();

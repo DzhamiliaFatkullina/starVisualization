@@ -61,7 +61,7 @@ function createSunComparisonChart(container, temperature, starName) {
   
   const data = [
     { name: "Sun", value: sunTemp, label: `${sunTemp} K` },
-    { name: starName || "Current Star", value: currentTemp, label: `${Math.round(currentTemp)} K` },
+    { name: starName || "Current ", value: currentTemp, label: `${Math.round(currentTemp)} K` },
     { name: coldestStar.host_star, value: minTemp, label: `${minTemp} K` },
     { name: hottestStar.host_star, value: maxTemp, label: `${maxTemp} K` }
   ];

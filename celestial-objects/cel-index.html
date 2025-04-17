@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Database | Cosmic Explorer</title>
+  <link rel="stylesheet" href="cel-styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header with back button -->
+  <header class="celestial-header">
+    <a href="/" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Main Page
+    </a>
+    <h1 class="title">STAR DATABASE</h1>
+    <div style="width: 100px;"></div> <!-- Spacer for alignment -->
+  </header>
+
+  <!-- Loading screen -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Loading Star Database...</p>
+  </div>
+
+  <!-- Main content -->
+  <div id="scene"></div>
+  <div id="info-panel">
+    <button id="close-btn" aria-label="Close panel">×</button>
+    <div id="info-content"></div>
+    <div class="visualizations">
+      <div class="visualization">
+        <h3 class="visualization-title">Temperature Comparison</h3>
+        <div id="sun-comparison"></div>
+      </div>
+      <div class="visualization">
+        <h3 class="visualization-title">Size Comparison</h3>
+        <div id="size-comparison"></div>
+      </div>
+    </div>
+  </div>
+  <div id="labels"></div>
+  
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/renderers/CSS2DRenderer.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <!-- Main script -->
+  <script src="cel-script.js"></script>
+
+  <script>
+    // Hide loading screen when everything is loaded
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(function() {
+          document.getElementById('loading').style.display = 'none';
+        }, 300);
+      }, 500);
+    });
+    
+    // Add smooth transition for the loading screen
+    document.getElementById('loading').style.transition = 'opacity 0.3s ease';
+  </script>
+</body>
+</html>

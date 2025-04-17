@@ -1,27 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Star Visualization</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Explorer | Interactive Space Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div id="scene"></div>
-  <div id="info-panel">
-    <button id="close-btn">×</button>
-    <div id="info-content"></div>
-    <div class="visualizations">
-      <div id="sun-comparison"></div>
-      <div id="size-comparison"></div>
-    </div>
-  </div>
-  <div id="labels"></div>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/renderers/CSS2DRenderer.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  
-  <script src="script.js"></script>
+    <header class="stellar-header">
+        <div class="container">
+            <h1 class="title">COSMIC EXPLORER</h1>
+            <p class="subtitle">Journey Through the Universe</p>
+        </div>
+        <div class="star-field">
+            <div class="stars"></div>
+            <div class="stars"></div>
+            <div class="stars"></div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="project-intro">
+            <h2>Explore the Cosmos Like Never Before</h2>
+            <p>Cosmic Explorer is an interactive web application that brings the universe to your fingertips. Discover planets and stars through immersive visualizations powered by NASA's astronomical data.</p>
+            
+            <div class="data-source-notice">
+                <i class="fas fa-database"></i>
+                <p>All data is sourced from NASA's API and has been preprocessed for optimal visualization.</p>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/solar-system/index.html" class="btn btn-primary">
+                    <i class="fas fa-globe"></i> Solar System Explorer
+                </a>
+                <a href="/celestial-objects/cel-index.html" class="btn btn-secondary">
+                    <i class="fas fa-star"></i> Celestial Object Explorer
+                </a>
+            </div>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-satellite"></i>
+                </div>
+                <h3>Comprehensive Data</h3>
+                <p>Visualizing 11 planets in our solar system and 610 stars from NASA's exoplanet archive.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-vr-cardboard"></i>
+                </div>
+                <h3>3D Solar System</h3>
+                <p>Interactive model with accurate planetary scales and physical characteristics.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3>Data Visualizations</h3>
+                <p>Interactive D3.js charts comparing stellar and planetary characteristics.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3>Growing Dataset</h3>
+                <p>Our team is actively working to add more engaging graphs and data fields.</p>
+            </div>
+        </section>
+
+        <section class="visualization-preview">
+            <h2>Interactive Visualization Panels</h2>
+            
+            <div class="panel-preview">
+                <div class="panel-description">
+                    <h3>Solar System Explorer</h3>
+                    <p>Explore our planetary neighborhood with detailed information about each celestial body:</p>
+                    <ul>
+                        <li>Planet Name</li>
+                        <li>Radius (km)</li>
+                        <li>Density (g/cm³)</li>
+                        <li>Mass (kg)</li>
+                        <li>Gravity (km³/s²)</li>
+                        <li>Mean Temperature (K)</li>
+                        <li>Albedo</li>
+                    </ul>
+                    <p>Interactive features include size comparison with Earth and calculating how much a person would weigh on each planet.</p>
+                    <a href="/solar-system/index.html" class="btn btn-outline">Explore Solar System Model</a>
+                </div>
+                <div class="panel-image">
+                    <img src="images/sol-preview.jpg" alt="Solar System Preview">
+                </div>
+            </div>
+            
+            <div class="panel-preview reverse">
+                <div class="panel-description">
+                    <h3>Star Database</h3>
+                    <p>Discover detailed information about stars and their planetary systems:</p>
+                    <ul>
+                        <li>Planet Name</li>
+                        <li>Host Star</li>
+                        <li>Spectral Type</li>
+                        <li>Orbital Period (days)</li>
+                        <li>Radius (Earth radii)</li>
+                        <li>Mass (Earth masses)</li>
+                        <li>Distance to Star (light-years)</li>
+                        <li>Equilibrium Temperature (K)</li>
+                        <li>Star Effective Temperature (K)</li>
+                        <li>Star Mass (Solar masses)</li>
+                    </ul>
+                    <p>Interactive D3.js visualizations include temperature comparison with the Sun, hottest/coldest star identification, and size comparisons with Earth and Sun.</p>
+                    <a href="/celestial-objects/cel-index.html" class="btn btn-outline">Explore Star Model</a>
+                </div>
+                <div class="panel-image">
+                    <img src="images/cel-preview.png" alt="Star Data Preview">
+                </div>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <h2>Our Astronomical Data</h2>
+            <p>Cosmic Explorer utilizes carefully curated data from NASA's API to provide accurate information about celestial objects:</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Planets Visualized</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">610</div>
+                    <div class="stat-label">Stars in Database</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Data Fields per Object</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Interactive Visualizations</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="stellar-footer">
+        <div class="container">
+            <p>Cosmic Explorer &copy; 2025 | An Interactive Space Visualization Project</p>
+            <p>Data sources: NASA Exoplanet Archive and Planetary Fact Sheets</p>
+            <div class="social-links">
+                <a href="https://github.com/DzhamiliaFatkullina/starVisualization/tree/master"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
